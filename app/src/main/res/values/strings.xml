@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">s205454 Lykkehjulet</string>
+    <string name="title_play">Spil</string>
+    <string name="point">Point</string>
+    <string name="life">Liv</string>
+    <string name="guess">Gæt</string>
+    <string name="make_guess">Afgiv gæt</string>
+    <string name="spin_the_wheel">Drej hjulet</string>
+</resources>
