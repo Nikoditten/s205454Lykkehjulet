@@ -5,5 +5,9 @@
         android:id="@+id/navigation_game"
         android:icon="@drawable/ic_action_play"
         android:title="@string/title_play" />
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/settings" />
 
 </menu>
