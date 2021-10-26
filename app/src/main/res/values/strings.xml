@@ -4,7 +4,7 @@
     <string name="point">Point</string>
     <string name="life">Liv</string>
     <string name="guess">Gæt</string>
-    <string name="make_guess">Afgiv gæt</string>
+    <string name="make_guess">Gæt</string>
     <string name="spin_the_wheel">Drej hjulet</string>
     <string name="guessed_chars">Allerede gættede bogstaver</string>
     <!-- TODO: Remove or change this placeholder text -->

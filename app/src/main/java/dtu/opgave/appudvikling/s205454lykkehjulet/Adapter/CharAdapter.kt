@@ -22,6 +22,13 @@ class CharAdapter(private val mList: List<CharModel>) : RecyclerView.Adapter<Cha
         val event_model = mList[position]
 
         holder.charView.text = event_model.charItem
+
+        if (!event_model.visible) {
+            holder.charView.visibility = View.INVISIBLE
+        } else {
+            holder.charView.visibility = View.VISIBLE
+        }
+
     }
 
     // return the number of the items in the list

@@ -1,6 +1,7 @@
 package dtu.opgave.appudvikling.s205454lykkehjulet.ui
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -30,10 +31,10 @@ class GameFragment : Fragment() {
 
 
     //TODO:
-    // 2. make cards invisible
     // 6. show winning page
     // 7. show losing page
     // 9. new game
+    // 10. lobby - vis high score og mulighed for nyt spil
 
 
     // Global lists
@@ -48,6 +49,8 @@ class GameFragment : Fragment() {
     private var phase: Phase = Phase.WHEEL
 
     private var tempPointReward: Int = 0
+
+    private var countCorrectGuess: Int = 0
 
     // SharedPreferences found on:
     // https://camposha.info/android-examples/android-sharedpreferences/
@@ -89,10 +92,24 @@ class GameFragment : Fragment() {
         // Rewards enum class
         val rewards: Rewards = Rewards()
 
-        displayWord(view, wordRv, categoryTxt)
+        charArray = wordGenerator.generateWord()
+
+        // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
+        countCorrectGuess = charArray.size-2
+
+        val category: String = wordGenerator.getCategory()
+
+        categoryTxt.text = category
+
+        for (i in 1 until charArray.size-1) {
+            charList.add(CharModel(charArray[i].uppercase(), false))
+        }
+
+        displayWord(view, wordRv)
         displayLifeBar(view, lifeRv, player)
 
         pointsTxt.text = player.point.toString()
+        guessEt.visibility = View.GONE
         actionBtn.setText(R.string.spin_the_wheel)
 
         actionBtn.setOnClickListener{
@@ -101,20 +118,25 @@ class GameFragment : Fragment() {
                 Log.d("REWARD", "onCreateView: REWARD: $reward")
                 if (Rewards.Reward.values()[reward.ordinal].points == -1){
                     when (reward.name){
-                        Rewards.Reward.BANKRUPT.name -> gameOver()
+                        Rewards.Reward.BANKRUPT.name -> {
+                            player.point = 0
+                            gameOver(view.context, won = false)
+                        }
                         Rewards.Reward.EXTRA_TURN.name -> {
-                            player.life = player.life + 1
+                            player.life += 1
                             displayLifeBar(view, lifeRv, player)
                             phase = Phase.WHEEL
+                            guessEt.visibility = View.GONE
                             actionBtn.setText(R.string.spin_the_wheel)
                         }
                         Rewards.Reward.SKIP_TURN.name -> {
                             player.life -= 1
                             if (player.life <= 1){
-                                gameOver()
+                                gameOver(view.context, won = false)
                             } else {
                                 displayLifeBar(view, lifeRv, player)
                                 phase = Phase.WHEEL
+                                guessEt.visibility = View.GONE
                                 actionBtn.setText(R.string.spin_the_wheel)
                             }
                         }
@@ -122,11 +144,56 @@ class GameFragment : Fragment() {
                 } else {
                     tempPointReward = Rewards.Reward.values()[reward.ordinal].points
                     phase = Phase.GUESS
+                    guessEt.visibility = View.VISIBLE
                     actionBtn.setText(R.string.guess)
                 }
             }else{
-                takeGuessTurn(guessEt, guessedTxt, player, view, lifeRv, actionBtn)
+                val guess: String = guessEt.text.toString()
+                if (charArray.contains(guess) && !guessedChars.contains(guess)){
+
+                    guessedChars.add(guess)
+                    guessedTxt.text = guessedChars.toString()
+                    guessEt.setText("")
+
+                    // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
+                    // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
+                    val count: Int = charArray.count{guess.contains(it)} - 2
+                    player.point += tempPointReward * count
+                    countCorrectGuess -= count
+
+                    val index: List<Int> = indexOfAll(guess)
+                    Log.d("REWARD", "onCreateView: INDEX: $index, $charArray")
+
+                    for (i in index) {
+                        charList[i-1] = CharModel(charArray[i].uppercase(), true)
+                    }
+
+                    displayWord(view, wordRv)
+
+                    if (countCorrectGuess == 0) {
+                        gameOver(view.context, won = true)
+                    }
+                    Log.d("REWARD", "onCreateView: COUNT: $count, $charArray")
+                } else {
+                    if (!guessedChars.contains(guess)){
+                        if (player.life < 2){
+                            gameOver(view.context, won = false)
+                        }
+                        guessedChars.add(guess)
+                        guessedTxt.text = guessedChars.toString()
+                        guessEt.setText("")
+                        player.life -= 1
+                        displayLifeBar(view, lifeRv, player)
+                    } else {
+                        guessEt.setText("")
+                        player.life -= 1
+                        displayLifeBar(view, lifeRv, player)
+                    }
+                }
+                tempPointReward = 0
+                pointsTxt.text = player.point.toString()
                 phase = Phase.WHEEL
+                guessEt.visibility = View.GONE
                 actionBtn.setText(R.string.spin_the_wheel)
             }
 
@@ -135,20 +202,7 @@ class GameFragment : Fragment() {
         return view
     }
 
-    private fun displayWord(view: View, wordRv: RecyclerView, categoryTxt: TextView){
-
-        charArray = wordGenerator.generateWord()
-
-        val category: String = wordGenerator.getCategory()
-
-        categoryTxt.text = category
-
-        guessedChars = ArrayList<String>()
-        charList = ArrayList<CharModel>()
-
-        for (i in 1 until charArray.size-1) {
-                charList.add(CharModel(charArray[i].uppercase()))
-        }
+    private fun displayWord(view: View, wordRv: RecyclerView){
 
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         val mLayoutManager = LinearLayoutManager(view.context)
@@ -179,35 +233,19 @@ class GameFragment : Fragment() {
         lifeRv.adapter = adapter
     }
 
-    private fun takeGuessTurn(guessEt: EditText, guessedTxt: TextView, player: Player, view: View, lifeRv: RecyclerView, actionBtn: Button){
-        val guess: String = guessEt.text.toString()
-        if (charArray.contains(guess) && !guessedChars.contains(guess)){
-            //TODO: Change visibility of card
-            guessedChars.add(guess)
-            guessedTxt.text = guessedChars.toString()
-            guessEt.setText("")
-            //TODO: Multiply tempPointReward with number of occurrence in word
-            player.point += tempPointReward
-            tempPointReward = 0
-            phase = Phase.WHEEL
-            actionBtn.setText(R.string.spin_the_wheel)
-        } else {
-            tempPointReward = 0
-            if (!guessedChars.contains(guess)){
-                if (player.life < 2){
-                    gameOver()
-                }
-                guessedChars.add(guess)
-                guessedTxt.text = guessedChars.toString()
-                guessEt.setText("")
-                player.life -= 1
-                displayLifeBar(view, lifeRv, player)
-            }
-        }
+    private fun gameOver(context: Context, won: Boolean){
+        phase = Phase.ENDED
+        startActivity(Intent(context, GameOverActivity::class.java))
     }
 
-    private fun gameOver(){
-        phase = Phase.ENDED
+    private fun indexOfAll(item: String) : List<Int> {
+        var count: List<Int> = emptyList()
+        for (i in 1 until charArray.size-1) {
+            if (charArray[i] == item){
+                count = count + listOf<Int>(i)
+            }
+        }
+        return count
     }
 
 }

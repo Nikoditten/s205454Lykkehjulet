@@ -1,4 +1,4 @@
 package dtu.opgave.appudvikling.s205454lykkehjulet.Model
 
-data class CharModel(val charItem: String) {
+data class CharModel(val charItem: String, val visible: Boolean) {
 }
