@@ -31,11 +31,12 @@ class GameFragment : Fragment() {
     // https://kotlinlang.org/docs/control-flow.html#when-expression
     // https://camposha.info/android-examples/android-sharedpreferences/
     // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
+    // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
+    // https://www.geeksforgeeks.org/android-recyclerview-in-kotlin/
+
 
 
     //TODO:
-    // 6. show winning page
-    // 7. show losing page
     // 9. new game
     // 10. lobby - vis high score og mulighed for nyt spil
 
@@ -87,7 +88,7 @@ class GameFragment : Fragment() {
         val lifeRv = view.findViewById<RecyclerView>(R.id.lifeRV)
 
         // Shared Pref
-        shared = view.context.getSharedPreferences("GAMESETTINGS" , Context.MODE_PRIVATE)
+        shared = view.context.getSharedPreferences("GAME" , Context.MODE_PRIVATE)
 
         // Initialize player object
         val player: Player = Player(shared.getInt("point", 5000), shared.getInt("life", 5))
@@ -120,11 +121,14 @@ class GameFragment : Fragment() {
                 val reward: Enum<Rewards.Reward> = rewards.getReward()
                 Log.d("REWARD", "onCreateView: REWARD: $reward")
                 if (Rewards.Reward.values()[reward.ordinal].points == -1){
+                    // https://kotlinlang.org/docs/control-flow.html#when-expression
                     when (reward.name){
                         Rewards.Reward.BANKRUPT.name -> {
-                            showToast(view,"Du er gået bankerot, du har derfor tabt")
+                            showToast(view,"Du er gået bankerot, du mister derfor alle dine point")
                             player.point = 0
-                            gameOver(view.context, won = false, player = player)
+                            phase = Phase.WHEEL
+                            guessEt.visibility = View.GONE
+                            actionBtn.setText(R.string.spin_the_wheel)
                         }
                         Rewards.Reward.EXTRA_TURN.name -> {
                             player.life += 1
@@ -137,7 +141,7 @@ class GameFragment : Fragment() {
                         Rewards.Reward.SKIP_TURN.name -> {
                             player.life -= 1
                             showToast(view,"Du springer en tur over og mister et liv")
-                            if (player.life <= 1){
+                            if (player.life == 0){
                                 gameOver(view.context, won = false, player = player)
                             } else {
                                 displayLifeBar(view, lifeRv, player)

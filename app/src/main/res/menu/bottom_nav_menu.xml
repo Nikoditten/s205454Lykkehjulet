@@ -5,6 +5,12 @@
         android:id="@+id/navigation_game"
         android:icon="@drawable/ic_action_play"
         android:title="@string/title_play" />
+
+    <item
+        android:id="@+id/navigation_stats"
+        android:icon="@drawable/ic_action_stats"
+        android:title="@string/highscore" />
+
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_action_settings"

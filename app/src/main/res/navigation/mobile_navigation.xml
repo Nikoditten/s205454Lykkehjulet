@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_game" />
 
     <fragment
+        android:id="@+id/navigation_stats"
+        android:name="dtu.opgave.appudvikling.s205454lykkehjulet.ui.StatsFragment"
+        android:label="@string/highscore"
+        tools:layout="@layout/fragment_stats" />
+
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="dtu.opgave.appudvikling.s205454lykkehjulet.ui.SettingsFragment"
         android:label="@string/settings"

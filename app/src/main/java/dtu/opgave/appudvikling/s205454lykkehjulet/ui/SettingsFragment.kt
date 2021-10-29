@@ -35,7 +35,7 @@ class SettingsFragment : Fragment() {
         val lifeSeekBar: SeekBar = view.findViewById(R.id.lifeSb)
         val pointSeekBar: SeekBar = view.findViewById(R.id.pointSb)
 
-        shared = view.context.getSharedPreferences("GAMESETTINGS" , Context.MODE_PRIVATE)
+        shared = view.context.getSharedPreferences("GAME" , Context.MODE_PRIVATE)
         val edit = shared.edit()
 
         lifeSeekBar.progress = shared.getInt("life", 5)
