@@ -12,6 +12,7 @@
         <activity
             android:name=".ui.GameOverActivity"
             android:exported="true"
+            android:label="@string/gameover"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"

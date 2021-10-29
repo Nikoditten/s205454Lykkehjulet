@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dtu.opgave.appudvikling.s205454lykkehjulet.Adapter.CharAdapter
@@ -28,6 +29,8 @@ class GameFragment : Fragment() {
 
     //SOURCES:
     // https://kotlinlang.org/docs/control-flow.html#when-expression
+    // https://camposha.info/android-examples/android-sharedpreferences/
+    // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
 
 
     //TODO:
@@ -119,11 +122,13 @@ class GameFragment : Fragment() {
                 if (Rewards.Reward.values()[reward.ordinal].points == -1){
                     when (reward.name){
                         Rewards.Reward.BANKRUPT.name -> {
+                            showToast(view,"Du er gået bankerot, du har derfor tabt")
                             player.point = 0
-                            gameOver(view.context, won = false)
+                            gameOver(view.context, won = false, player = player)
                         }
                         Rewards.Reward.EXTRA_TURN.name -> {
                             player.life += 1
+                            showToast(view,"Du får et ekstra liv")
                             displayLifeBar(view, lifeRv, player)
                             phase = Phase.WHEEL
                             guessEt.visibility = View.GONE
@@ -131,8 +136,9 @@ class GameFragment : Fragment() {
                         }
                         Rewards.Reward.SKIP_TURN.name -> {
                             player.life -= 1
+                            showToast(view,"Du springer en tur over og mister et liv")
                             if (player.life <= 1){
-                                gameOver(view.context, won = false)
+                                gameOver(view.context, won = false, player = player)
                             } else {
                                 displayLifeBar(view, lifeRv, player)
                                 phase = Phase.WHEEL
@@ -143,6 +149,7 @@ class GameFragment : Fragment() {
                     }
                 } else {
                     tempPointReward = Rewards.Reward.values()[reward.ordinal].points
+                    showToast(view,"Du landede på $tempPointReward point")
                     phase = Phase.GUESS
                     guessEt.visibility = View.VISIBLE
                     actionBtn.setText(R.string.guess)
@@ -171,13 +178,14 @@ class GameFragment : Fragment() {
                     displayWord(view, wordRv)
 
                     if (countCorrectGuess == 0) {
-                        gameOver(view.context, won = true)
+                        gameOver(view.context, won = true, player = player)
                     }
                     Log.d("REWARD", "onCreateView: COUNT: $count, $charArray")
                 } else {
                     if (!guessedChars.contains(guess)){
                         if (player.life < 2){
-                            gameOver(view.context, won = false)
+                            player.life -= 1
+                            gameOver(view.context, won = false, player = player)
                         }
                         guessedChars.add(guess)
                         guessedTxt.text = guessedChars.toString()
@@ -200,6 +208,10 @@ class GameFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun showToast(view: View, message: String){
+        Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun displayWord(view: View, wordRv: RecyclerView){
@@ -233,9 +245,13 @@ class GameFragment : Fragment() {
         lifeRv.adapter = adapter
     }
 
-    private fun gameOver(context: Context, won: Boolean){
+    private fun gameOver(context: Context, won: Boolean, player: Player){
         phase = Phase.ENDED
-        startActivity(Intent(context, GameOverActivity::class.java))
+        val intent: Intent = Intent(context, GameOverActivity::class.java)
+        intent.putExtra("WON", won)
+        intent.putExtra("POINT", player.point)
+        intent.putExtra("LIFE", player.life)
+        startActivity(intent)
     }
 
     private fun indexOfAll(item: String) : List<Int> {
