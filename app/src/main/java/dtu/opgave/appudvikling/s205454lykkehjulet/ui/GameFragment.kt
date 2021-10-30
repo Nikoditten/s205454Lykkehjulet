@@ -35,7 +35,6 @@ class GameFragment : Fragment() {
     // https://www.geeksforgeeks.org/android-recyclerview-in-kotlin/
 
 
-
     //TODO:
     // 9. new game
     // 10. lobby - vis high score og mulighed for nyt spil
@@ -58,7 +57,7 @@ class GameFragment : Fragment() {
 
     // SharedPreferences found on:
     // https://camposha.info/android-examples/android-sharedpreferences/
-    lateinit var shared : SharedPreferences
+    lateinit var shared: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +87,7 @@ class GameFragment : Fragment() {
         val lifeRv = view.findViewById<RecyclerView>(R.id.lifeRV)
 
         // Shared Pref
-        shared = view.context.getSharedPreferences("GAME" , Context.MODE_PRIVATE)
+        shared = view.context.getSharedPreferences("GAME", Context.MODE_PRIVATE)
 
         // Initialize player object
         val player: Player = Player(shared.getInt("point", 5000), shared.getInt("life", 5))
@@ -99,13 +98,13 @@ class GameFragment : Fragment() {
         charArray = wordGenerator.generateWord()
 
         // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
-        countCorrectGuess = charArray.size-2
+        countCorrectGuess = charArray.size - 2
 
         val category: String = wordGenerator.getCategory()
 
         categoryTxt.text = category
 
-        for (i in 1 until charArray.size-1) {
+        for (i in 1 until charArray.size - 1) {
             charList.add(CharModel(charArray[i].uppercase(), false))
         }
 
@@ -116,15 +115,15 @@ class GameFragment : Fragment() {
         guessEt.visibility = View.GONE
         actionBtn.setText(R.string.spin_the_wheel)
 
-        actionBtn.setOnClickListener{
-            if (phase == Phase.WHEEL){
+        actionBtn.setOnClickListener {
+            if (phase == Phase.WHEEL) {
                 val reward: Enum<Rewards.Reward> = rewards.getReward()
                 Log.d("REWARD", "onCreateView: REWARD: $reward")
-                if (Rewards.Reward.values()[reward.ordinal].points == -1){
+                if (Rewards.Reward.values()[reward.ordinal].points == -1) {
                     // https://kotlinlang.org/docs/control-flow.html#when-expression
-                    when (reward.name){
+                    when (reward.name) {
                         Rewards.Reward.BANKRUPT.name -> {
-                            showToast(view,"Du er gået bankerot, du mister derfor alle dine point")
+                            showToast(view, "Du er gået bankerot, du mister derfor alle dine point")
                             player.point = 0
                             phase = Phase.WHEEL
                             guessEt.visibility = View.GONE
@@ -132,7 +131,7 @@ class GameFragment : Fragment() {
                         }
                         Rewards.Reward.EXTRA_TURN.name -> {
                             player.life += 1
-                            showToast(view,"Du får et ekstra liv")
+                            showToast(view, "Du får et ekstra liv")
                             displayLifeBar(view, lifeRv, player)
                             phase = Phase.WHEEL
                             guessEt.visibility = View.GONE
@@ -140,8 +139,8 @@ class GameFragment : Fragment() {
                         }
                         Rewards.Reward.SKIP_TURN.name -> {
                             player.life -= 1
-                            showToast(view,"Du springer en tur over og mister et liv")
-                            if (player.life == 0){
+                            showToast(view, "Du springer en tur over og mister et liv")
+                            if (player.life == 0) {
                                 gameOver(view.context, won = false, player = player)
                             } else {
                                 displayLifeBar(view, lifeRv, player)
@@ -153,14 +152,14 @@ class GameFragment : Fragment() {
                     }
                 } else {
                     tempPointReward = Rewards.Reward.values()[reward.ordinal].points
-                    showToast(view,"Du landede på $tempPointReward point")
+                    showToast(view, "Du landede på $tempPointReward point")
                     phase = Phase.GUESS
                     guessEt.visibility = View.VISIBLE
                     actionBtn.setText(R.string.guess)
                 }
-            }else{
+            } else {
                 val guess: String = guessEt.text.toString()
-                if (charArray.contains(guess) && !guessedChars.contains(guess)){
+                if (charArray.contains(guess) && !guessedChars.contains(guess)) {
 
                     guessedChars.add(guess)
                     guessedTxt.text = guessedChars.toString()
@@ -168,7 +167,7 @@ class GameFragment : Fragment() {
 
                     // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
                     // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
-                    val count: Int = charArray.count{guess.contains(it)} - 2
+                    val count: Int = charArray.count { guess.contains(it) } - 2
                     player.point += tempPointReward * count
                     countCorrectGuess -= count
 
@@ -176,7 +175,7 @@ class GameFragment : Fragment() {
                     Log.d("REWARD", "onCreateView: INDEX: $index, $charArray")
 
                     for (i in index) {
-                        charList[i-1] = CharModel(charArray[i].uppercase(), true)
+                        charList[i - 1] = CharModel(charArray[i].uppercase(), true)
                     }
 
                     displayWord(view, wordRv)
@@ -186,8 +185,8 @@ class GameFragment : Fragment() {
                     }
                     Log.d("REWARD", "onCreateView: COUNT: $count, $charArray")
                 } else {
-                    if (!guessedChars.contains(guess)){
-                        if (player.life < 2){
+                    if (!guessedChars.contains(guess)) {
+                        if (player.life < 2) {
                             player.life -= 1
                             gameOver(view.context, won = false, player = player)
                         }
@@ -214,11 +213,11 @@ class GameFragment : Fragment() {
         return view
     }
 
-    private fun showToast(view: View, message: String){
+    private fun showToast(view: View, message: String) {
         Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun displayWord(view: View, wordRv: RecyclerView){
+    private fun displayWord(view: View, wordRv: RecyclerView) {
 
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         val mLayoutManager = LinearLayoutManager(view.context)
@@ -231,7 +230,7 @@ class GameFragment : Fragment() {
         wordRv.adapter = adapter
     }
 
-    private fun displayLifeBar(view: View, lifeRv: RecyclerView, player: Player){
+    private fun displayLifeBar(view: View, lifeRv: RecyclerView, player: Player) {
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         val mLayoutManager = LinearLayoutManager(view.context)
         mLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -240,7 +239,7 @@ class GameFragment : Fragment() {
 
         lifesList = ArrayList<LifeModel>()
 
-        for (i in 1..player.life){
+        for (i in 1..player.life) {
             lifesList.add(LifeModel(i))
         }
 
@@ -249,8 +248,16 @@ class GameFragment : Fragment() {
         lifeRv.adapter = adapter
     }
 
-    private fun gameOver(context: Context, won: Boolean, player: Player){
+    private fun gameOver(context: Context, won: Boolean, player: Player) {
         phase = Phase.ENDED
+        val highscoreLife: Int = shared.getInt("lifeHighscore", 0)
+        val highscorePoint: Int = shared.getInt("pointHighscore", 0)
+        if (player.life > highscoreLife) {
+            shared.edit().putInt("lifeHighscore", player.life).apply()
+        }
+        if (player.point > highscorePoint) {
+            shared.edit().putInt("pointHighscore", player.point).apply()
+        }
         val intent: Intent = Intent(context, GameOverActivity::class.java)
         intent.putExtra("WON", won)
         intent.putExtra("POINT", player.point)
@@ -258,10 +265,10 @@ class GameFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun indexOfAll(item: String) : List<Int> {
+    private fun indexOfAll(item: String): List<Int> {
         var count: List<Int> = emptyList()
-        for (i in 1 until charArray.size-1) {
-            if (charArray[i] == item){
+        for (i in 1 until charArray.size - 1) {
+            if (charArray[i] == item) {
                 count = count + listOf<Int>(i)
             }
         }
