@@ -158,7 +158,7 @@ class GameFragment : Fragment() {
                     actionBtn.setText(R.string.guess)
                 }
             } else {
-                val guess: String = guessEt.text.toString()
+                val guess: String = guessEt.text.toString().lowercase()
                 if (charArray.contains(guess) && !guessedChars.contains(guess)) {
 
                     guessedChars.add(guess)
