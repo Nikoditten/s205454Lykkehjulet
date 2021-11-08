@@ -225,9 +225,7 @@ class GameFragment : Fragment() {
 
         wordRv.layoutManager = mLayoutManager
 
-        val adapter = CharAdapter(charList)
-
-        wordRv.adapter = adapter
+        wordRv.adapter = CharAdapter(charList)
     }
 
     private fun displayLifeBar(view: View, lifeRv: RecyclerView, player: Player) {
@@ -243,9 +241,7 @@ class GameFragment : Fragment() {
             lifesList.add(LifeModel(i))
         }
 
-        val adapter = LifeAdapter(lifesList)
-
-        lifeRv.adapter = adapter
+        lifeRv.adapter = LifeAdapter(lifesList)
     }
 
     private fun gameOver(context: Context, won: Boolean, player: Player) {

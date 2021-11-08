@@ -9,21 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import dtu.opgave.appudvikling.s205454lykkehjulet.Model.CharModel
 import dtu.opgave.appudvikling.s205454lykkehjulet.R
 
-class CharAdapter(private val mList: List<CharModel>) : RecyclerView.Adapter<CharAdapter.ViewHolder>() {
+class CharAdapter(private val charList: List<CharModel>) : RecyclerView.Adapter<CharAdapter.CharViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.char_item, parent, false)
 
-        return ViewHolder(view)
+        return CharViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val event_model = mList[position]
+    override fun onBindViewHolder(holder: CharViewHolder, position: Int) {
+        val charModel = charList[position]
 
-        holder.charView.text = event_model.charItem
+        holder.charView.text = charModel.charItem
 
-        if (!event_model.visible) {
+        if (!charModel.visible) {
             holder.charView.visibility = View.INVISIBLE
         } else {
             holder.charView.visibility = View.VISIBLE
@@ -33,13 +33,13 @@ class CharAdapter(private val mList: List<CharModel>) : RecyclerView.Adapter<Cha
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
-        Log.d("CHARARRAY", "getItemCount: " + mList.size)
-        return mList.size
+        Log.d("CHARARRAY", "getItemCount: " + charList.size)
+        return charList.size
     }
 
     // Holds the views for adding it to image and text
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val charView: TextView = itemView.findViewById(R.id.charTxt)
+    class CharViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val charView: TextView = view.findViewById(R.id.charTxt)
     }
 
 }
