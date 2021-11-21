@@ -35,11 +35,6 @@ class GameFragment : Fragment() {
     // https://www.geeksforgeeks.org/android-recyclerview-in-kotlin/
 
 
-    //TODO:
-    // 9. new game
-    // 10. lobby - vis high score og mulighed for nyt spil
-
-
     // Global lists
     private var lifesList = ArrayList<LifeModel>()
     private var charList = ArrayList<CharModel>()
