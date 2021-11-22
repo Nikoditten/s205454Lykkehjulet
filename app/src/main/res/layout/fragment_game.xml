@@ -113,6 +113,8 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:weightSum="5">
 
         <EditText

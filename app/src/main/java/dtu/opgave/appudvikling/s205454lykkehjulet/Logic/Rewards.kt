@@ -4,6 +4,7 @@ import kotlin.random.Random
 
 class Rewards(){
 
+    // Samtlige mulige belønninger
     enum class Reward (val points: Int) {
         ONE(100),
         TWO(200),
@@ -21,8 +22,8 @@ class Rewards(){
     }
 
 
-
-    public fun getReward(): Reward {
+    // Returnerer en tilfældig belønning
+    fun getReward(): Reward {
         return Reward.values()[Random.nextInt(0, 12)]
     }
 

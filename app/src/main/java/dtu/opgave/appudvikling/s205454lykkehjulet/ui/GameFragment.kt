@@ -22,21 +22,11 @@ import dtu.opgave.appudvikling.s205454lykkehjulet.Logic.Player
 import dtu.opgave.appudvikling.s205454lykkehjulet.Logic.Rewards
 import dtu.opgave.appudvikling.s205454lykkehjulet.Logic.WordGenerator
 import dtu.opgave.appudvikling.s205454lykkehjulet.Model.CharModel
-import dtu.opgave.appudvikling.s205454lykkehjulet.Model.LifeModel
 import dtu.opgave.appudvikling.s205454lykkehjulet.R
 
 class GameFragment : Fragment() {
 
-    //SOURCES:
-    // https://kotlinlang.org/docs/control-flow.html#when-expression
-    // https://camposha.info/android-examples/android-sharedpreferences/
-    // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
-    // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
-    // https://www.geeksforgeeks.org/android-recyclerview-in-kotlin/
-
-
     // Global lists
-    private var lifesList = ArrayList<LifeModel>()
     private var charList = ArrayList<CharModel>()
     private var guessedChars = ArrayList<String>()
 
@@ -50,7 +40,7 @@ class GameFragment : Fragment() {
 
     private var countCorrectGuess: Int = 0
 
-    // SharedPreferences found on:
+    // SharedPreferences fundet på:
     // https://camposha.info/android-examples/android-sharedpreferences/
     lateinit var shared: SharedPreferences
 
@@ -92,7 +82,7 @@ class GameFragment : Fragment() {
 
         charArray = wordGenerator.generateWord()
 
-        // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
+        // charArray indeholder 2 tomme mellemrum ([, s, k, o, l, e, ]), derfor fratrækkes to fra charArray.size
         countCorrectGuess = charArray.size - 2
 
         val category: String = wordGenerator.getCategory()
@@ -115,6 +105,7 @@ class GameFragment : Fragment() {
                 val reward: Enum<Rewards.Reward> = rewards.getReward()
                 Log.d("REWARD", "onCreateView: REWARD: $reward")
                 if (Rewards.Reward.values()[reward.ordinal].points == -1) {
+                    // When kommando fundet på
                     // https://kotlinlang.org/docs/control-flow.html#when-expression
                     when (reward.name) {
                         Rewards.Reward.BANKRUPT.name -> {
@@ -160,8 +151,8 @@ class GameFragment : Fragment() {
                     guessedTxt.text = guessedChars.toString()
                     guessEt.setText("")
 
+                    // charArray indeholder 2 tomme mellemrum ([, s, k, o, l, e, ]), derfor fratrækkes to fra charArray.size
                     // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
-                    // The charArray contains 2 empty spaces ([, s, k, o, l, e, ]), therefore we minus 2 from the count
                     val count: Int = charArray.count { guess.contains(it) } - 2
                     player.point += tempPointReward * count
                     countCorrectGuess -= count
@@ -214,6 +205,7 @@ class GameFragment : Fragment() {
 
     private fun displayWord(view: View, wordRv: RecyclerView) {
 
+        // Horizontalt recyclerview fundet på
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         val mLayoutManager = LinearLayoutManager(view.context)
         mLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -224,19 +216,14 @@ class GameFragment : Fragment() {
     }
 
     private fun displayLifeBar(view: View, lifeRv: RecyclerView, player: Player) {
+        // Horizontalt recyclerview fundet på
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         val mLayoutManager = LinearLayoutManager(view.context)
         mLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         lifeRv.layoutManager = mLayoutManager
 
-        lifesList = ArrayList<LifeModel>()
-
-        for (i in 1..player.life) {
-            lifesList.add(LifeModel(i))
-        }
-
-        lifeRv.adapter = LifeAdapter(lifesList)
+        lifeRv.adapter = LifeAdapter(player.life)
     }
 
     private fun gameOver(context: Context, won: Boolean, player: Player) {
@@ -246,9 +233,11 @@ class GameFragment : Fragment() {
         if (player.life > highscoreLife) {
             shared.edit().putInt("lifeHighscore", player.life).apply()
         }
+
         if (player.point > highscorePoint) {
             shared.edit().putInt("pointHighscore", player.point).apply()
         }
+
         val intent: Intent = Intent(context, GameOverActivity::class.java)
         intent.putExtra("WON", won)
         intent.putExtra("POINT", player.point)

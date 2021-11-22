@@ -3,31 +3,27 @@ package dtu.opgave.appudvikling.s205454lykkehjulet.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import dtu.opgave.appudvikling.s205454lykkehjulet.Model.LifeModel
 import dtu.opgave.appudvikling.s205454lykkehjulet.R
 
-class LifeAdapter(private val lifeList: List<LifeModel>) :
+class LifeAdapter(private val lifeCount: Int) :
     RecyclerView.Adapter<LifeAdapter.LifeViewHolder>() {
 
+    // Denne fil er baseret på slides fra uge 05
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LifeAdapter.LifeViewHolder {
+        // Definer view
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.life_item, parent, false)
-
         return LifeAdapter.LifeViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: LifeViewHolder, position: Int) { val lifeModel = lifeList[position] }
+    // Returnér antallet af items i listen
+    override fun getItemCount(): Int { return lifeCount }
 
-    // return the number of the items in the list
-    override fun getItemCount(): Int {
-        return lifeList.size
-    }
-
-    // Holds the views for adding it to image and text
+    // Klassen og funktionen nedenfor bruges ikke,
+    // da life_item.xml kun består af et cardview med en farve
+    override fun onBindViewHolder(holder: LifeViewHolder, position: Int) {}
     class LifeViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
 
 }

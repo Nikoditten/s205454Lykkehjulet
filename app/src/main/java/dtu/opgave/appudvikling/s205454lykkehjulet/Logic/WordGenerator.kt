@@ -1,19 +1,23 @@
 package dtu.opgave.appudvikling.s205454lykkehjulet.Logic
 
+import kotlin.random.Random
+
 class WordGenerator {
 
+    // Liste med ord og deres tilhørende kategorier
     val Words: List<String> = listOf("politi", "skole", "computer")
     val Categories: List<String> = listOf("Lov og orden", "Læring", "Elektronik")
 
     var index: Int = 0
 
-    public fun generateWord() : List<String> {
-        // https://stackoverflow.com/questions/45685026/how-can-i-get-a-random-number-in-kotlin
-        index = (0..2).random()
+    // Generer tilfældigt ord
+    fun generateWord() : List<String> {
+        index = Random.nextInt(0, Words.size-1)
         return Words[index].split("")
     }
 
-    public fun getCategory() : String {
+    // Returnerer det udvalgte ords tilhørende kategori
+    fun getCategory() : String {
         return Categories[index]
     }
 

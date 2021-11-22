@@ -23,14 +23,17 @@ class StatsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Definer view
         val view: View = inflater.inflate(R.layout.fragment_stats, container, false)
 
+        // Definer textviews
         val pointHighscoreTxt: TextView = view.findViewById(R.id.highscorePointTxt)
         val lifeHighscoreTxt: TextView = view.findViewById(R.id.highscoreLifeTxt)
 
+        // Definer kilde til sharedpref
         shared = view.context.getSharedPreferences("GAME" , Context.MODE_PRIVATE)
 
+        // Hent highscore for point og life, hvis værdierene er null brug 0 som standard
         pointHighscoreTxt.text = shared.getInt("pointHighscore", 0).toString()
         lifeHighscoreTxt.text = shared.getInt("lifeHighscore", 0).toString()
 
