@@ -8,4 +8,4 @@
 - https://www.geeksforgeeks.org/android-recyclerview-in-kotlin/
 
 ## Dokumenter
-Uge 05 slides (62550 Lesson 05)
+- Uge 05 slides (62550 Lesson 05)
