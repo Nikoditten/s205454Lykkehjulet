@@ -105,6 +105,17 @@
             android:layout_marginTop="10dp"
             android:textAllCaps="true" />
 
+        <TextView
+            android:id="@+id/rewardTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -121,11 +132,12 @@
             android:id="@+id/guessEt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="4"
             android:ems="10"
+            android:hint="@string/guess"
             android:inputType="text"
             android:maxLength="1"
-            android:layout_weight="4"
-            android:hint="@string/guess" />
+            android:minHeight="48dp" />
 
         <Button
             android:id="@+id/actionBtn"

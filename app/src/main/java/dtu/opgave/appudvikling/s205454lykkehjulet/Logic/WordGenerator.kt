@@ -4,21 +4,29 @@ import kotlin.random.Random
 
 class WordGenerator {
 
-    // Liste med ord og deres tilhørende kategorier
-    val Words: List<String> = listOf("politi", "skole", "computer")
-    val Categories: List<String> = listOf("Lov og orden", "Læring", "Elektronik")
+    // Liste med ord
+    val Words: List<List<String>> = listOf(
+        listOf("Politi", "Ambulance", "Ambulanceredder", "Brandmand", "Politibil", "Retssal", "Dommer"),
+        listOf("Underviser", "Bog", "Lektier", "Stil", "Skolegård", "Idræt", "Dansk", "Matematik"),
+        listOf("Computer", "Mobil", "Apple", "Google", "Android", "Windows", "iPad", "MacBook")
+    )
 
-    var index: Int = 0
+    // Liste med spillets kategorier
+    val Categories: List<String> = listOf("Lov og orden", "Uddannelse", "Elektronik")
 
-    // Generer tilfældigt ord
-    fun generateWord() : List<String> {
-        index = Random.nextInt(0, Words.size-1)
-        return Words[index].split("")
-    }
+    // Get og Set - kan kaldes således: WordGenerator.word
+    var wordList: List<String> = listOf()
+    var word: String = ""
+    var category: String = ""
 
-    // Returnerer det udvalgte ords tilhørende kategori
-    fun getCategory() : String {
-        return Categories[index]
+
+    // Generer tilfældig kategori og udvælg derefter et tilfældigt ord
+    fun generateNewWord() {
+        val categoryIndex: Int = Random.nextInt(0, Categories.size)
+        val wordIndex: Int = Random.nextInt(0, Words[categoryIndex].size)
+        category = Categories[categoryIndex]
+        word = Words[categoryIndex][wordIndex].lowercase()
+        wordList = word.split("")
     }
 
 }

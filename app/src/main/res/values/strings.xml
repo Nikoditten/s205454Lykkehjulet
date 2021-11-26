@@ -7,12 +7,17 @@
     <string name="make_guess">Gæt</string>
     <string name="spin_the_wheel">Drej hjulet</string>
     <string name="guessed_chars">Allerede gættede bogstaver</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings">Indstillinger</string>
     <string name="number_of_lifes">Antal liv</string>
     <string name="number_of_points">Antal point</string>
     <string name="gameover">Spillet er slut</string>
     <string name="highscore">Highscore</string>
     <string name="new_game">Nyt spil</string>
+    <string name="extra_life">Du får et ekstra liv</string>
+    <string name="bankrupt">Du er gået bankerot, du mister derfor alle dine point</string>
+    <string name="skip_turn">Du springer en tur over og mister et liv</string>
+    <string name="already_guessed">Det har du allerede gættet på!!! Du mister et liv.</string>
+    <string name="wrong">Forkert</string>
+    <string name="correct">Rigtigt!!!</string>
+    <string name="point_reward">Du landede på %d point</string>
 </resources>
