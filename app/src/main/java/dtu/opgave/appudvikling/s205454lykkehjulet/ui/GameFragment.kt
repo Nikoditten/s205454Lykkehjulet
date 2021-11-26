@@ -58,7 +58,6 @@ class GameFragment : Fragment() {
     private lateinit var charLayoutManager: LinearLayoutManager
 
     private lateinit var charAdapter: CharAdapter
-    private lateinit var lifeAdapter: LifeAdapter
 
     // SharedPreferences fundet på:
     // https://camposha.info/android-examples/android-sharedpreferences/
@@ -185,16 +184,13 @@ class GameFragment : Fragment() {
         lifeLayoutManager = LinearLayoutManager(view.context)
         lifeLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
-        lifeAdapter = LifeAdapter(player.life)
-
         lifeRv.layoutManager = lifeLayoutManager
 
-        lifeRv.adapter = lifeAdapter
+        lifeRv.adapter = LifeAdapter(player.life)
     }
 
     private fun updateLifeRV() {
-        lifeAdapter = LifeAdapter(player.life)
-        lifeRv.adapter = lifeAdapter
+        lifeRv.adapter = LifeAdapter(player.life)
     }
 
     private fun initObjects(view: View) {
