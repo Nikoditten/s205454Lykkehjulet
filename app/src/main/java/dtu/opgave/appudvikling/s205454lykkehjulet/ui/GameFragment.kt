@@ -30,33 +30,46 @@ class GameFragment : Fragment() {
     private var guessedChars = ArrayList<String>()
     private var charArray: List<String> = emptyList()
 
+    // Word Generator class til at generere ord og kategori
     private val wordGenerator: WordGenerator = WordGenerator()
 
+    // Reward klasse
     private val rewards: Rewards = Rewards()
 
+    // Game phase klasse
     private var phase: Phase = Phase.WHEEL
 
+    // De point som man potientelt kan vinde,
+    // hvis man gætter rigtigt
     private var tempPointReward: Int = 0
 
+    // Til at holde styr på, hvornår hele ordet er gættet
     private var countCorrectGuess: Int = 0
 
+    // Spiller objekt
     private lateinit var player: Player
 
+    // TextViews
     private lateinit var pointsTxt: TextView
     private lateinit var guessedTxt: TextView
     private lateinit var categoryTxt: TextView
     private lateinit var rewardTxt: TextView
 
+    // EditText
     private lateinit var guessEt: EditText
 
+    // Button
     private lateinit var actionBtn: Button
 
+    // Recyclerviews
     private lateinit var wordRv: RecyclerView
     private lateinit var lifeRv: RecyclerView
 
+    // LinearLayoutManager for recyclerviews
     private lateinit var lifeLayoutManager: LinearLayoutManager
     private lateinit var charLayoutManager: LinearLayoutManager
 
+    // Adapter for wordRv
     private lateinit var charAdapter: CharAdapter
 
     // SharedPreferences fundet på:
@@ -79,6 +92,7 @@ class GameFragment : Fragment() {
         // Initialize recyclerview
         initRecyclerViews(view)
 
+        // Knappen bruges til og eksekvere lykkehjuls- og gætte fasen
         actionBtn.setOnClickListener {
             if (phase == Phase.WHEEL) {
                 executeWheelPhase(view)
@@ -104,7 +118,7 @@ class GameFragment : Fragment() {
             player.point += tempPointReward * count
             countCorrectGuess -= count
 
-            val index: List<Int> = indexOfAll(guess)
+            val index: List<Int> = wordGenerator.indexOfAll(guess, charArray)
 
             for (i in index) {
                 charList[i - 1] = CharModel(charArray[i], true)
@@ -173,23 +187,27 @@ class GameFragment : Fragment() {
         // Horizontalt recyclerview fundet på
         // https://www.tutorialspoint.com/how-to-create-horizontal-listview-in-android-using-kotlin
         charLayoutManager = LinearLayoutManager(view.context)
+        // Recyclerviewet skal have et horizontalt scroll direction
         charLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
+        // Definere et adapter objekt til wordRv
         charAdapter = CharAdapter(charList)
 
+        // Tildeler LinearLayoutManager og charAdapter til mit wordRv
         wordRv.layoutManager = charLayoutManager
-
         wordRv.adapter = charAdapter
 
+        // Definere LinearLayoutManager til lifeRv
         lifeLayoutManager = LinearLayoutManager(view.context)
         lifeLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
+        // Tildeler LinearLayoutManager og charAdapter til mit lifeRv
         lifeRv.layoutManager = lifeLayoutManager
-
         lifeRv.adapter = LifeAdapter(player.life)
     }
 
     private fun updateLifeRV() {
+        // Bruges til at opdatere mit lifeRv, når spillerens liv ændre sig
         lifeRv.adapter = LifeAdapter(player.life)
     }
 
@@ -201,25 +219,34 @@ class GameFragment : Fragment() {
         // Initialize player object
         player = Player(shared.getInt("point", 5000), shared.getInt("life", 5))
 
+        // Generere et nyt ord
         wordGenerator.generateNewWord()
 
     }
 
     private fun initGameLogic() {
-
+        // Giver mit kategory TextView ordets kategori
         categoryTxt.text = wordGenerator.category
 
+        // Tildeler en liste med ordets bogstaver til mit charArray
         charArray = wordGenerator.wordList
 
         // charArray indeholder 2 tomme mellemrum ([, s, k, o, l, e, ]), derfor fratrækkes to fra charArray.size
         countCorrectGuess = charArray.size - 2
 
+        // Generere et CharModel objekt til hvert bogstav
+        // Som indsættes i min charList som skal bruges som argument til mit charAdapter
         for (i in 1 until charArray.size - 1) {
             charList.add(CharModel(charArray[i], false))
         }
 
+        // Sætter spillerens point til mit point TextView
         pointsTxt.text = player.point.toString()
+        // Fjerner mit EditText fra layoutet
+        // Dette gøres fordi programmet er i wheel phase
+        // og man skal derfor ikke have mulighed for at gætte
         guessEt.visibility = View.GONE
+        // Sætter "Drej Hjulet" tekst til knappen
         actionBtn.setText(R.string.spin_the_wheel)
 
     }
@@ -244,51 +271,59 @@ class GameFragment : Fragment() {
 
     private fun togglePhase() {
         if (phase == Phase.WHEEL) {
+            // Sætter spillets phase til GUESS
             phase = Phase.GUESS
+            // Gør mit gætte textfelt synligt
             guessEt.visibility = View.VISIBLE
+            // Sætter knappens tekst til "Gæt"
             actionBtn.setText(R.string.guess)
         } else {
+            // Sætter spillets phase til WHEEL
             phase = Phase.WHEEL
+            // Fjerner mit gætte textfelt
             guessEt.visibility = View.GONE
+            // Sætter knappens tekst til "Drej Hjulet"
             actionBtn.setText(R.string.spin_the_wheel)
+            // Fjerner teksten fra min reward tekstfelt
+            // For at undgå forvirring
             rewardTxt.text = ""
         }
     }
 
     private fun showToast(view: View, message: String) {
+        // Hvis en Toast med kort varighed
         Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun gameOver(context: Context, won: Boolean) {
+        // Sætter spillets phase til ENDED
         phase = Phase.ENDED
 
+        // Opdatere brugerens highscore
         updateHighScore()
 
+        // Laver et Intent objekt med henblik på at skifte til GameOverActivity
+        // Tilføjer ekstra info som skal føres med over til GameOverActivity
         val intent = Intent(context, GameOverActivity::class.java)
         intent.putExtra("WON", won)
         intent.putExtra("WORD", wordGenerator.word)
         intent.putExtra("POINT", player.point)
         intent.putExtra("LIFE", player.life)
+        // Eksekverer min Intent
         startActivity(intent)
     }
 
     private fun updateHighScore() {
+        // Henter den nuværende highscore
+        // Default værdien sættes til 0, i tilfælde af, at der ikke blev fundet data
         val highscoreLife: Int = shared.getInt("lifeHighscore", 0)
         val highscorePoint: Int = shared.getInt("pointHighscore", 0)
+        // Tjekker om spilleren havde en bedre score
         if (player.life > highscoreLife && player.point > highscorePoint) {
+            // Opdaterer highscore værdierne
             shared.edit().putInt("lifeHighscore", player.life).apply()
             shared.edit().putInt("pointHighscore", player.point).apply()
         }
-    }
-
-    private fun indexOfAll(item: String): List<Int> {
-        var count: List<Int> = emptyList()
-        for (i in 1 until charArray.size - 1) {
-            if (charArray[i] == item) {
-                count = count + listOf(i)
-            }
-        }
-        return count
     }
 
 }

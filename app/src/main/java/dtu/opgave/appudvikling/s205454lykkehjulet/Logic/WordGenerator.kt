@@ -20,13 +20,27 @@ class WordGenerator {
     var category: String = ""
 
 
-    // Generer tilfældig kategori og udvælg derefter et tilfældigt ord
+    // Generer tilfældig kategori og udvælger derefter et tilfældigt ord
     fun generateNewWord() {
         val categoryIndex: Int = Random.nextInt(0, Categories.size)
         val wordIndex: Int = Random.nextInt(0, Words[categoryIndex].size)
         category = Categories[categoryIndex]
         word = Words[categoryIndex][wordIndex].lowercase()
         wordList = word.split("")
+    }
+
+    fun indexOfAll(item: String, charArray: List<String>): List<Int> {
+        // En liste indeholdende index for det bogstav brugeren gættede
+        // Der kan være flere af samme bogstav... Derfor en liste
+        var count: List<Int> = emptyList()
+        for (i in 1 until charArray.size - 1) {
+            // Tjekker om bogstavet er lig med item
+            if (charArray[i] == item) {
+                // Tilføjer indexet til listen
+                count = count + listOf(i)
+            }
+        }
+        return count
     }
 
 }
