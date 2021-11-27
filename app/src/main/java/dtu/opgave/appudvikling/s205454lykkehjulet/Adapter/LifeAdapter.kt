@@ -11,11 +11,11 @@ class LifeAdapter(private val lifeCount: Int) :
 
     // Denne fil er baseret på slides fra uge 05
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LifeAdapter.LifeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LifeViewHolder {
         // Definer view
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.life_item, parent, false)
-        return LifeAdapter.LifeViewHolder(view)
+        return LifeViewHolder(view)
     }
 
     // Returnér antallet af items i listen

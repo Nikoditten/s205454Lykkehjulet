@@ -1,6 +1,5 @@
 package dtu.opgave.appudvikling.s205454lykkehjulet.Adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,7 @@ class CharAdapter(private val charList: List<CharModel>) : RecyclerView.Adapter<
     }
 
     class CharViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // Angiv det textview der bruges i char_item.xlm
+        // Angiv det textview der bruges i char_item.xml
         val charView: TextView = view.findViewById(R.id.charTxt)
     }
 

@@ -24,7 +24,7 @@ class Rewards(){
 
     // Returnerer en tilfældig belønning
     fun getReward(): Reward {
-        return Reward.values()[Random.nextInt(0, 12)]
+        return Reward.values()[Random.nextInt(0, 13)]
     }
 
 }

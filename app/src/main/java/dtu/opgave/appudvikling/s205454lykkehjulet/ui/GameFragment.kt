@@ -105,80 +105,131 @@ class GameFragment : Fragment() {
     }
 
     private fun executeGuessPhase(view: View) {
+        // Henter spillerens gæt
         val guess: String = guessEt.text.toString().lowercase()
+        // Tjekker om mit array med ordets bogstaver indeholder brugerens gæt
+        // og om brugeren allerede har gættet på bogstavet
         if (charArray.contains(guess) && !guessedChars.contains(guess)) {
+            // Viser en toast med korrekt gæt
             showToast(view, getString(R.string.correct))
+            // Tilføjer gættet til en liste med gættede bogstaver
             guessedChars.add(guess)
+            // Opdater TextView
             guessedTxt.text = guessedChars.toString()
+            // Fjerner bogstavet fra EditText feltet
             guessEt.setText("")
 
+
+            // Tæller hvor mange gange bogstaver er i ordet
             // charArray indeholder 2 tomme mellemrum ([, s, k, o, l, e, ]), derfor fratrækkes to fra charArray.size
             // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
             val count: Int = charArray.count { guess.contains(it) } - 2
+            // Tilføjer point til spilleren
             player.point += tempPointReward * count
+            // Opdatere hvor mange bogstaver der er tilbage som man kan gætte på
             countCorrectGuess -= count
 
+            // Finder indexerne for det gættede bogstav
             val index: List<Int> = wordGenerator.indexOfAll(guess, charArray)
 
+            // Opdatere charList og gør det gættede bogstav synligt
             for (i in index) {
                 charList[i - 1] = CharModel(charArray[i], true)
+                // Opdatere recyclerviewet
                 charAdapter.notifyItemChanged(i - 1)
             }
 
+            // Hvis alle ordets bogstaver er gættet, afsluttes spillet som vundet
             if (countCorrectGuess == 0) {
                 gameOver(view.context, won = true)
             }
 
-        } else {
+        } else { // Hvis brugeren allerede havde gættet på bogstavet eller brugeren gættede forkert
+
+            // Hvis brugeren ikke allerede har gættet på bogstvaet
             if (!guessedChars.contains(guess)) {
+                // Vis toast med forkert gæt
                 showToast(view, getString(R.string.wrong))
+                // Vis spillerens liv er mindre end 2 (Lig med 1) fratrækkes et point
+                // og spillet afsluttes som tabt
                 if (player.life < 2) {
                     player.life -= 1
                     gameOver(view.context, won = false)
                 }
+                // Bogstavet tilføjes til listen med gættede bogstaver
                 guessedChars.add(guess)
+                // Opdatere TextViewet
                 guessedTxt.text = guessedChars.toString()
+                // Fjerner bogstavet fra EditText feltet
                 guessEt.setText("")
+                // Spilleren fratrækkes et point
                 player.life -= 1
             } else {
+                // Hvis brugeren allerede har gættet på bogstavet
+                    // Fjerene bogstavet fra EditText feltet, spilleren bliver fratrukket 1 liv
+                        // og en toast med du har allerede gættet på bogstavet vises
                 guessEt.setText("")
                 player.life -= 1
+                // Vis spillerens liv er mindre end 2 (Lig med 1) fratrækkes et point
+                // og spillet afsluttes som tabt
+                if (player.life == 0) {
+                    gameOver(view.context, won = false)
+                }
                 showToast(view, getString(R.string.already_guessed))
             }
         }
+        // Opdate lifeRv
         updateLifeRV()
+        // Sætter temp variablen til 0
         tempPointReward = 0
+        // Opdatere spilleren point i UI
         pointsTxt.text = player.point.toString()
+        // Skifter spillets phase
         togglePhase()
     }
 
     private fun executeWheelPhase(view: View) {
+        // Generere ny reward
         val reward: Enum<Rewards.Reward> = rewards.getReward()
+        // Hvis rewardets point er lig med -1
+        // Er reward en af følgende:
+        // - Bankrupt
+        // - Extra turn
+        // - Skip turn
         if (Rewards.Reward.values()[reward.ordinal].points == -1) {
+            // Tjekker hvilet reward der er genereret
             // When kommando fundet på
             // https://kotlinlang.org/docs/control-flow.html#when-expression
             when (reward.name) {
+                // Hvis reward er bankrupt, afsluttes spillet som tabt
+                    // og spillerens point bliver 0
                 Rewards.Reward.BANKRUPT.name -> {
                     rewardTxt.text = getString(R.string.bankrupt)
                     player.point = 0
                     gameOver(view.context, false)
                 }
+                // Hvis reward er Extra turn, får spiller et liv mere
                 Rewards.Reward.EXTRA_TURN.name -> {
                     player.life += 1
                     rewardTxt.text = getString(R.string.extra_life)
                 }
+                // Hvis reward er skip turn, fjernes fratrækkes et liv fra spilleren
                 Rewards.Reward.SKIP_TURN.name -> {
                     player.life -= 1
                     rewardTxt.text = getString(R.string.skip_turn)
+                    // Hvis spillerens liv bliver 0, afsluttes spillet som tabt
                     if (player.life == 0) {
                         gameOver(view.context, won = false)
                     }
                 }
             }
+            // Recyclerview med liv opdateres
             updateLifeRV()
         } else {
+            // Hvis reward er et point reward til værdien af point til en temp variabel
             tempPointReward = Rewards.Reward.values()[reward.ordinal].points
             rewardTxt.text = getString(R.string.point_reward, tempPointReward)
+            // Skifter spillets phase
             togglePhase()
         }
     }
