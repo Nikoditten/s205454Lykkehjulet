@@ -20,4 +20,5 @@
     <string name="wrong">Forkert</string>
     <string name="correct">Rigtigt!!!</string>
     <string name="point_reward">Du landede på %d point</string>
+    <string name="empty_guess">Du kan ikke gætte på blankt</string>
 </resources>

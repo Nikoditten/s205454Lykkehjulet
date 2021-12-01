@@ -15,6 +15,7 @@ class GameOverActivity : AppCompatActivity() {
 
         // Henter intent extras der følger med fra forrige acitivty
         val won: Boolean = intent.extras!!.getBoolean("WON")
+        val word: String = intent.extras!!.getString("WORD").toString()
         val point: Int = intent.extras!!.getInt("POINT")
         val life: Int = intent.extras!!.getInt("LIFE")
 
@@ -23,6 +24,7 @@ class GameOverActivity : AppCompatActivity() {
         val gameStatusTxt: TextView = findViewById(R.id.gameStatusTxt)
         val pointsLeftTxt: TextView = findViewById(R.id.pointsLeftTxt)
         val lifeLeftTxt: TextView = findViewById(R.id.lifeLeftTxt)
+        val wordTxt: TextView = findViewById(R.id.wordTxt)
 
         // OnClickListener til at starte nyt spil
         newGameBtn.setOnClickListener{
@@ -32,6 +34,7 @@ class GameOverActivity : AppCompatActivity() {
         // Check om spilleren vandt eller tabte og indsæt derefter teksten
         if (won) gameStatusTxt.text = "Tillykke, du vandt" else gameStatusTxt.text = "Øv, du tabte"
         pointsLeftTxt.text = "Du fik $point point"
+        wordTxt.text = "Ordet var:\n$word"
         lifeLeftTxt.text = "Du havde $life liv tilbage"
 
     }

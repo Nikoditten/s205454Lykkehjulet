@@ -107,6 +107,14 @@ class GameFragment : Fragment() {
     private fun executeGuessPhase(view: View) {
         // Henter spillerens gæt
         val guess: String = guessEt.text.toString().lowercase()
+        // Check om guess er tomt
+        if (guess.isEmpty()){
+            // Fortæller brugeren, at man ikke kan gætte blankt
+            showToast(view, getString(R.string.empty_guess))
+            // Returnerer, for at lade brugeren prøve igen,
+            // uden det får betydning for spillets phase
+            return
+        }
         // Tjekker om mit array med ordets bogstaver indeholder brugerens gæt
         // og om brugeren allerede har gættet på bogstavet
         if (charArray.contains(guess) && !guessedChars.contains(guess)) {
@@ -196,16 +204,15 @@ class GameFragment : Fragment() {
         // - Extra turn
         // - Skip turn
         if (Rewards.Reward.values()[reward.ordinal].points == -1) {
-            // Tjekker hvilet reward der er genereret
+            // Tjekker hvilket reward der er genereret
             // When kommando fundet på
             // https://kotlinlang.org/docs/control-flow.html#when-expression
             when (reward.name) {
-                // Hvis reward er bankrupt, afsluttes spillet som tabt
-                    // og spillerens point bliver 0
+                // Hvis reward er bankrupt, sættes spillerens point til 0
                 Rewards.Reward.BANKRUPT.name -> {
                     rewardTxt.text = getString(R.string.bankrupt)
                     player.point = 0
-                    gameOver(view.context, false)
+                    pointsTxt.text = player.point.toString()
                 }
                 // Hvis reward er Extra turn, får spiller et liv mere
                 Rewards.Reward.EXTRA_TURN.name -> {
@@ -240,15 +247,16 @@ class GameFragment : Fragment() {
         // Recyclerviewet skal have et horizontalt scroll direction
         charLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
-        // Definere et adapter objekt til wordRv
+        // Definerer et adapter objekt til wordRv
         charAdapter = CharAdapter(charList)
 
         // Tildeler LinearLayoutManager og charAdapter til mit wordRv
         wordRv.layoutManager = charLayoutManager
         wordRv.adapter = charAdapter
 
-        // Definere LinearLayoutManager til lifeRv
+        // Definerer LinearLayoutManager til lifeRv
         lifeLayoutManager = LinearLayoutManager(view.context)
+        // Horizontalt scroll view
         lifeLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         // Tildeler LinearLayoutManager og charAdapter til mit lifeRv
