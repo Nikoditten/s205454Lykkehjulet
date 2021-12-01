@@ -1,3 +1,6 @@
+# Link til Github repository
+- https://github.com/Nikoditten/s205454Lykkehjulet
+
 # Kilder:
 
 ## Links
