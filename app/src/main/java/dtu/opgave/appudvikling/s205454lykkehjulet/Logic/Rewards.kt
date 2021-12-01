@@ -2,7 +2,7 @@ package dtu.opgave.appudvikling.s205454lykkehjulet.Logic
 
 import kotlin.random.Random
 
-class Rewards(){
+class Rewards {
 
     // Samtlige mulige belønninger
     enum class Reward (val points: Int) {
@@ -24,7 +24,7 @@ class Rewards(){
 
     // Returnerer en tilfældig belønning
     fun getReward(): Reward {
-        return Reward.values()[Random.nextInt(0, 13)]
+        return Reward.values()[Random.nextInt(0, Reward.values().size)]
     }
 
 }

@@ -22,7 +22,7 @@ class LifeAdapter(private val lifeCount: Int) :
     override fun getItemCount(): Int { return lifeCount }
 
     // Klassen og funktionen nedenfor bruges ikke,
-    // da life_item.xml kun består af et cardview med en farve
+    // da life_item.xml kun består af et cardview med et hjerte emoji
     override fun onBindViewHolder(holder: LifeViewHolder, position: Int) {}
     class LifeViewHolder(view: View) : RecyclerView.ViewHolder(view) {}
 

@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //Koden nedenfor er autogenereret af android studio (New Activity -> Bottom Navigation Activity)
-    fun initNavbar(binding: ActivityMainBinding) {
+    private fun initNavbar(binding: ActivityMainBinding) {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)

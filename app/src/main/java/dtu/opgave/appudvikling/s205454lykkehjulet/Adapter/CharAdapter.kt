@@ -40,7 +40,7 @@ class CharAdapter(private val charList: List<CharModel>) : RecyclerView.Adapter<
     }
 
     class CharViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // Angiv det textview der bruges i char_item.xml
+        // Angiver det textview der bruges i char_item.xml
         val charView: TextView = view.findViewById(R.id.charTxt)
     }
 

@@ -119,7 +119,6 @@ class GameFragment : Fragment() {
             // Fjerner bogstavet fra EditText feltet
             guessEt.setText("")
 
-
             // Tæller hvor mange gange bogstaver er i ordet
             // charArray indeholder 2 tomme mellemrum ([, s, k, o, l, e, ]), derfor fratrækkes to fra charArray.size
             // https://stackoverflow.com/questions/49846295/kotlin-count-occurrences-of-chararray-in-string
@@ -342,7 +341,7 @@ class GameFragment : Fragment() {
     }
 
     private fun showToast(view: View, message: String) {
-        // Hvis en Toast med kort varighed
+        // Vis en Toast med kort varighed
         Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()
     }
 

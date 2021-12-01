@@ -6,8 +6,8 @@ class WordGenerator {
 
     // Liste med ord
     val Words: List<List<String>> = listOf(
-        listOf("Politi", "Ambulance", "Ambulanceredder", "Brandmand", "Politibil", "Retssal", "Dommer"),
-        listOf("Underviser", "Bog", "Lektier", "Stil", "Skolegård", "Idræt", "Dansk", "Matematik"),
+        listOf("Politi", "Brandmand", "Retssal", "Dommer"),
+        listOf("Underviser", "Bog", "Lektier", "Stil", "Idræt", "Dansk"),
         listOf("Computer", "Mobil", "Apple", "Google", "Android", "Windows", "iPad", "MacBook")
     )
 
